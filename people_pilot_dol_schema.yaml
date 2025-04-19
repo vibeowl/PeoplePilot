@@ -108,3 +108,8 @@ components:
       name: api_key
 security:
   - api_key: []
+
+      in: query
+      name: api_key
+security:
+  - api_key: []
