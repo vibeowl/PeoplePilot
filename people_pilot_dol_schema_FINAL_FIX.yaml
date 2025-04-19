@@ -1,0 +1,111 @@
+
+openapi: 3.1.0
+info:
+  title: People Pilot DOL Data Tools
+  description: Access DOL datasets including WHD violations, OSHA inspections, BLS labor stats, and OFLC PERM certifications.
+  version: 1.0.0
+servers:
+  - url: https://api.dol.gov
+paths:
+  /V1/Compliance/WHD/:
+    get:
+      operationId: getWHDCompliance
+      summary: Get WHD compliance records (wage and hour violations)
+      parameters:
+        - in: query
+          name: trade_nm
+          schema:
+            type: string
+          description: Business name to search
+        - in: query
+          name: city_nm
+          schema:
+            type: string
+          description: City name (optional)
+        - in: query
+          name: st_cd
+          schema:
+            type: string
+          description: State code (e.g. TX, CA)
+      responses:
+        '200':
+          description: List of WHD compliance records
+
+  /V1/OSHA/Inspections:
+    get:
+      operationId: getOSHAInspections
+      summary: Get OSHA inspection records
+      parameters:
+        - in: query
+          name: establishmentName
+          schema:
+            type: string
+          description: Business name
+        - in: query
+          name: activityCity
+          schema:
+            type: string
+          description: City name (optional)
+        - in: query
+          name: activityState
+          schema:
+            type: string
+          description: State abbreviation (e.g. NY, CA)
+      responses:
+        '200':
+          description: List of OSHA inspection records
+
+  /V1/OFLC/PERM:
+    get:
+      operationId: getPERMFilings
+      summary: Get PERM foreign labor certification records
+      parameters:
+        - in: query
+          name: employer_name
+          schema:
+            type: string
+          description: Employer name
+        - in: query
+          name: job_title
+          schema:
+            type: string
+          description: Job title (e.g., Software Engineer)
+      responses:
+        '200':
+          description: List of PERM filings
+
+  /publicAPI/v2/timeseries/data/:
+    post:
+      operationId: getBLSData
+      summary: Get BLS labor statistics (wages, employment)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                seriesid:
+                  type: array
+                  items:
+                    type: string
+                  example: ["CEU0500000003"]  # Example BLS series ID
+                startyear:
+                  type: string
+                  example: "2023"
+                endyear:
+                  type: string
+                  example: "2023"
+      responses:
+        '200':
+          description: BLS time series results
+
+components:
+  schemas: {}
+  securitySchemes:
+    api_key:
+      type: apiKey
+      in: query
+      name: api_key
+security:
+  - api_key: []
